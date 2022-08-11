@@ -3,37 +3,34 @@ import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    public List<List<Integer>> threeSum(int[] nums) {
+    public List<List<Integer>> threeSum(int[] numbers) {
         List<List<Integer>> res = new ArrayList<>();
-        Arrays.sort(nums);
-        int n = nums.length;
+        Arrays.parallelSort(numbers);
+        int n = numbers.length;
         int right = n - 1;
         int i = 0;
-        if (right < 2 || nums[right] < 0) {
+        if (right < 2 || numbers[right] < 0) {
             return res;
         }
-        while (i < n - 2) {
-            if (nums[i] > 0) {
-                break;
-            }
-            int target = -nums[i];
+        while (numbers[i] <= 0 && i < n-2) {
+            int target = -numbers[i];
             int left = i + 1;
             right = n - 1;
             while (left < right) {
-                if (nums[right] < 0) {
+                if (numbers[right] < 0) {
                     break;
                 }
-                if (nums[left] + nums[right] == target) {
-                    res.add(Arrays.asList(nums[i], nums[left], nums[right]));
-                    while(left < right && nums[left] == nums[++left]);
-                    while(left < right && nums[right] == nums[--right]);
-                } else if (nums[left] + nums[right] > target) {
+                if (numbers[left] + numbers[right] == target) {
+                    res.add(Arrays.asList(numbers[i], numbers[left], numbers[right]));
+                    while(left < right && numbers[left] == numbers[++left]);
+                    while(left < right && numbers[right] == numbers[--right]);
+                } else if (numbers[left] + numbers[right] > target) {
                     right--;
                 } else {
                     left++;
                 }
             }
-            while (i < n - 2 && nums[i] == nums[++i]);
+            while (i < n - 2 && numbers[i] == numbers[++i]);
         }
         return res;
     }
