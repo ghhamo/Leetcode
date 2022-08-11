@@ -1,81 +1,40 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class Solution {
-    public List<List<Integer>> threeSum(int[] array) {
-        Set<Solution.Trio> trios = new HashSet<>(array.length * 3);
-        List<List<Integer>> retVals = new LinkedList<>();
-        Map<Integer, Integer> negatives = new LinkedHashMap<>(array.length / 2);
-        Map<Integer, Integer> positives = new LinkedHashMap<>(array.length / 2);
-        for (int j : array) {
-            if (j < 0) {
-                negatives.merge(j, 1, Integer::sum);
-            } else {
-                positives.merge(j, 1, Integer::sum);
-            }
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        int n = nums.length;
+        int right = n - 1;
+        int i = 0;
+        if (right < 2 || nums[right] < 0) {
+            return res;
         }
-        for (int first : positives.keySet()) {
-            for (int second : negatives.keySet()) {
-                int third = -1 * (first + second);
-                if (third == first) {
-                    if (positives.get(third) == 1) {
-                        continue;
-                    }
-                } else if (third == second) {
-                    if (negatives.get(third) == 1) {
-                        continue;
-                    }
+        while (i < n - 2) {
+            if (nums[i] > 0) {
+                break;
+            }
+            int target = -nums[i];
+            int left = i + 1;
+            right = n - 1;
+            while (left < right) {
+                if (nums[right] < 0) {
+                    break;
                 }
-                if (third < 0) {
-                    if (negatives.containsKey(third)) {
-                        Solution.Trio trio = new Solution.Trio(first, second, third);
-                        trios.add(trio);
-                    }
+                if (nums[left] + nums[right] == target) {
+                    res.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    while(left < right && nums[left] == nums[++left]);
+                    while(left < right && nums[right] == nums[--right]);
+                } else if (nums[left] + nums[right] > target) {
+                    right--;
                 } else {
-                    if (positives.containsKey(third)) {
-                        Solution.Trio trio = new Solution.Trio(first, second, third);
-                        trios.add(trio);
-                    }
+                    left++;
                 }
             }
+            while (i < n - 2 && nums[i] == nums[++i]);
         }
-        Integer integer = positives.get(0);
-        if (integer != null && integer > 2) {
-            Solution.Trio trio = new Solution.Trio(0, 0, 0);
-            trios.add(trio);
-        }
-        for (Solution.Trio trio : trios) {
-            List<Integer> integers = new ArrayList<>(3);
-            integers.add(trio.first);
-            integers.add(trio.second);
-            integers.add(trio.third);
-            retVals.add(integers);
-        }
-        return retVals;
-    }
-
-    record Trio(int first, int second, int third) {
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Trio trio)) return false;
-            if (first == trio.first && second == trio.second && third == trio.third) {
-                return true;
-            } else if (first == trio.first && second == trio.third && third == trio.second) {
-                return true;
-            } else if (first == trio.second && second == trio.first && third == trio.third) {
-                return true;
-            } else if (first == trio.second && second == trio.third && third == trio.first) {
-                return true;
-            } else if (first == trio.third && second == trio.first && third == trio.second) {
-                return true;
-            } else
-                return first == trio.third && second == trio.second && third == trio.first;
-        }
-
-        @Override
-        public int hashCode() {
-            return first + second + third;
-        }
+        return res;
     }
 }
-
