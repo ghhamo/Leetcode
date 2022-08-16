@@ -75,13 +75,13 @@ public class Solution2 {
     }
 
     static private ArrayList<String> rec(int index, HashMap<Integer, ArrayList<String>> buttons, String digits, ArrayList<String> results) {
-        ArrayList<String> strings = new ArrayList<>();
+        ArrayList<String> subResult = new ArrayList<>();
         ArrayList<String> list = buttons.get(Integer.parseInt(String.valueOf(digits.charAt(index))));
         for (int j = 0; j < list.size(); j++) {
             if (results.size() > 0) {
                 for (String result : results) {
                     String s = result + list.get(j);
-                    strings.add(s);
+                    subResult.add(s);
                 }
             } else {
                 results.addAll(list);
@@ -89,8 +89,8 @@ public class Solution2 {
             }
         }
         if (index >= digits.length() - 1) {
-            return strings;
+            return subResult;
         }
-        return rec(++index, buttons, digits, strings);
+        return rec(++index, buttons, digits, subResult);
     }
 }
