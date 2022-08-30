@@ -133,7 +133,6 @@ class Solution {
                 if (leftChildPosition >= size || rightChildPosition >= size) break;
                 T leftChild = getData(leftChildPosition);
                 T rightChild = getData(rightChildPosition);
-
                 if (leftChild == null && rightChild == null) {
                     break;
                 } else {
