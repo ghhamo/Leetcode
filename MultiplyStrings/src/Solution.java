@@ -14,103 +14,62 @@ class Solution {
         }
         List<StringBuilder> list = new ArrayList<>();
         StringBuilder start = new StringBuilder();
-        StringBuilder end = new StringBuilder();
         int zeroCounter = 1;
-        int firstDigitOfCurrentNumber = -1;
+        int carry = 0;
         for (int i = num2.length() - 1; i >= 0; i--) {
-            int curr2 = Integer.parseInt(String.valueOf(num2.charAt(i)));
+            int curr2 = num2.charAt(i) - '0';
             for (int j = num1.length() - 1; j >= 0; j--) {
-                int curr1 = Integer.parseInt(String.valueOf(num1.charAt(j)));
+                int curr1 = num1.charAt(j) - '0';
                 int currentAnswer = curr2 * curr1;
-                if (firstDigitOfCurrentNumber > 0) {
-                    currentAnswer += firstDigitOfCurrentNumber;
-                    firstDigitOfCurrentNumber = -1;
-                }
-                Pair pair = parser(currentAnswer);
-                if (pair.firstDigit > 0) {
-                    firstDigitOfCurrentNumber = pair.firstDigit;
-                }
-                start.append(pair.lastDigit);
-                start.append(end);
-                end = start;
-                start = new StringBuilder();
-                if (j == 0) {
-                    if (firstDigitOfCurrentNumber > 0) {
-                        start.append(firstDigitOfCurrentNumber);
-                        start.append(end);
-                        list.add(start);
-                    } else {
-                        list.add(end);
-                    }
-                    firstDigitOfCurrentNumber = -1;
-                    start = new StringBuilder();
-                    end = new StringBuilder();
-                    end.append("0".repeat(Math.max(0, zeroCounter)));
-                    zeroCounter++;
-                }
+                currentAnswer += carry;
+                carry = currentAnswer / 10;
+                start.append(currentAnswer % 10);
             }
+            if (carry > 0) {
+                start.append(carry);
+            }
+            list.add(start.reverse());
+            carry = 0;
+            start = new StringBuilder();
+            start.append("0".repeat(zeroCounter));
+            zeroCounter++;
         }
         return add(list);
     }
 
     private static String add(List<StringBuilder> list) {
         StringBuilder start = new StringBuilder();
-        StringBuilder end = new StringBuilder();
         StringBuilder cur = list.get(0);
-        int firstDigitOfCurrentNumber = -1;
+        int carry = 0;
         for (int i = 1; i < list.size(); i++) {
             StringBuilder sec = list.get(i);
-            int curI = cur.length() - 1;
-            int curJ = sec.length() - 1;
-            int curr1 = 0;
-            int curr2 = 0;
-            while (curI > -1 || curJ > -1) {
-                if (curI > -1) {
-                    curr1 = Integer.parseInt(String.valueOf(cur.charAt(curI)));
+            int first = cur.length() - 1;
+            int second = sec.length() - 1;
+            int lastDigitOfFirstNum = 0;
+            int lastDigitOfSecondNum = 0;
+            while (first > -1 || second > -1) {
+                if (first > -1) {
+                    lastDigitOfFirstNum = cur.charAt(first) - '0';
                 }
-                if (curJ > -1) {
-                    curr2 = Integer.parseInt(String.valueOf(sec.charAt(curJ)));
+                if (second > -1) {
+                    lastDigitOfSecondNum = sec.charAt(second) - '0';
                 }
-                int currentAnswer = curr1 + curr2;
-                if (firstDigitOfCurrentNumber > 0) {
-                    currentAnswer += firstDigitOfCurrentNumber;
-                    firstDigitOfCurrentNumber = -1;
-                }
-                Pair pair = parser(currentAnswer);
-                if (pair.firstDigit > 0) {
-                    firstDigitOfCurrentNumber = pair.firstDigit;
-                }
-                start.append(pair.lastDigit);
-                start.append(end);
-                end = start;
-                start = new StringBuilder();
-                curr1 = 0;
-                curr2 = 0;
-                curI--;
-                curJ--;
+                int currentAnswer = lastDigitOfSecondNum + lastDigitOfFirstNum;
+                currentAnswer += carry;
+                carry = currentAnswer / 10;
+                start.append(currentAnswer % 10);
+                lastDigitOfFirstNum = 0;
+                lastDigitOfSecondNum = 0;
+                first--;
+                second--;
             }
-            if (firstDigitOfCurrentNumber > 0) {
-                start.append(firstDigitOfCurrentNumber);
-                start.append(end);
-                cur = start;
-            } else {
-                cur = end;
+            if (carry > 0) {
+                start.append(carry);
             }
-            firstDigitOfCurrentNumber = -1;
+            cur = start.reverse();
+            carry = 0;
             start = new StringBuilder();
-            end = new StringBuilder();
         }
         return String.valueOf(cur);
-    }
-
-    private static Pair parser(int num) {
-        String s = String.valueOf(num);
-        if (s.length() > 1) {
-            return new Pair(Integer.parseInt(String.valueOf(s.charAt(0))), s.charAt(1));
-        }
-        return new Pair(0, s.charAt(0));
-    }
-
-    record Pair(int firstDigit, char lastDigit) {
     }
 }
