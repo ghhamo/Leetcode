@@ -8,7 +8,7 @@ class Solution {
         res.next = null;
         return head;
     }
-    
+
 
     public ListNode reverseListByIterative(ListNode head) {
         if (head == null) return null;
