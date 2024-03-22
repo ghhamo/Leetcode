@@ -1,28 +1,25 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Solution {
-
+class Solution {
     public List<Integer> diffWaysToCompute(String expression) {
-        List<Integer> operands = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        List<Integer> numbers = new ArrayList<>();
         List<Character> operators = new ArrayList<>();
-        StringBuilder num = new StringBuilder();
-        int length = expression.length();
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < expression.length(); i++) {
             char current = expression.charAt(i);
             if (current >= '0' && current <= '9') {
-                num.append(current);
-            } else {
-                operands.add(Integer.parseInt(String.valueOf(num)));
-                operators.add(current);
-                num = new StringBuilder();
+                stringBuilder.append(current);
+                continue;
             }
+            operators.add(current);
+            numbers.add(Integer.parseInt(String.valueOf(stringBuilder)));
+            stringBuilder = new StringBuilder();
         }
-        operands.add(Integer.parseInt(String.valueOf(num)));
-        return rec(operands, operators, expression);
+        return rec(expression, numbers, new ArrayList<>());
     }
-    public List<Integer> rec(List<Integer> nums, List<Character> signs, String exp) {
 
-        return rec(nums, signs, exp);
+    public List<Integer> rec(String expression, List<Integer> numbers, List<Integer> results) {
+
     }
 }
